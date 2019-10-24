@@ -1,0 +1,10 @@
+
+public class member {
+	//이름, 나이, 성별, 전화번호, 주소
+	String name;
+	String Id;
+	int age;
+	String tel;
+	String addr;
+
+}
