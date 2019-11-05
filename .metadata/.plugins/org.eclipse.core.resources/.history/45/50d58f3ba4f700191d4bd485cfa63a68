@@ -1,0 +1,18 @@
+package Main;
+
+import control.DaoLogin;
+import view.LoginFrame;
+import view.ManageView;
+
+public class Main {
+	LoginFrame frameLoginFrame;
+	ManageView frameManage;
+	
+	DaoLogin daoLogin;
+	
+	
+	public static void main(String[] ar) {
+		new LoginFrame();
+	}
+	
+}

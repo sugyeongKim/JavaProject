@@ -1,10 +1,40 @@
 
 public class member {
-	//이름, 나이, 성별, 전화번호, 주소
-	private String m_name;
-	private String m_Id;
-	private int m_age;
-	private String m_tel;
-	private String m_addr;
+	private int age;
+	private String name;
+	private String addr;
+	private String tel;
+	private int mileage;
+	
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAddr() {
+		return addr;
+	}
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+	public String getTel() {
+		return tel;
+	}
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+	public int getMileage() {
+		return mileage;
+	}
+	public void setMileage(int mileage) {
+		this.mileage = mileage;
+	}
 
 }

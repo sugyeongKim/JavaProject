@@ -1,0 +1,28 @@
+package test;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class RoomTestGui extends JFrame {
+	public  RoomTestGui() {
+		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+		setSize(1600,900);
+		setTitle("RoomTestGui");
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	class MyPanel extends JPanel{
+		Image img;
+		public MyPanel() {
+			img = Toolkit.getDefaultToolkit().createImage("img/gameOff.png");
+		}
+	}
+
+}
