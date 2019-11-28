@@ -24,7 +24,7 @@ public class DaoLogin {
 		pstmt = con.prepareStatement(sql);
 		ResultSet rs = pstmt.executeQuery();
 		if(!rs.next()){
-			System.out.println("비어있는 값이군!?");
+			System.out.println("비어있는 값");
 			sql = "insert into member_test (id, password) values ('test', '1234');";
 			pstmt = con.prepareStatement(sql);
 			return pstmt.executeUpdate();

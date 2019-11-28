@@ -1,7 +1,0 @@
-CREATE TABLE ROOM(
-R_NO		INT NOT NULL,
-R_USE		ENUM('Y','N') NOT NULL,
-R__
-
-
-)

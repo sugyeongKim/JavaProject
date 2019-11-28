@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
- //객실 그림
+ //객실 그려주는 
 public class PanSeat extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
