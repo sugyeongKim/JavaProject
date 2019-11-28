@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import assets.DBConnectionMgr;
-
+//얘 수정해야댐 얘 잘 모르겠다
 public class memberShow extends JPanel{
 	 	private JTable table;   
 	 	private JScrollPane scrollPane;  

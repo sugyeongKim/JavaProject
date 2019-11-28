@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 
 import Main.Main;
 import control.DaoLogin;
- 
+ //처음 로그인화면
 public class FrameLogin extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -87,8 +87,7 @@ public class FrameLogin extends JFrame implements ActionListener{
         passwordField.setBounds(718, 555, 280, 40);
         passwordField.setOpaque(false);
         passwordField.setFont(font);
-        passwordField.setForeground(Color.black);
-        passwordField.setText("message");
+        passwordField.setForeground(Color.black); 
         passwordField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         layeredPane.add(passwordField);
  
@@ -127,7 +126,7 @@ public class FrameLogin extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("액션 체크 됨 ");
+		System.out.println(" 액션  ");
 		System.out.println(loginTextField.getText());
 		System.out.println(passwordField.getPassword());
 		
@@ -136,9 +135,9 @@ public class FrameLogin extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, "아이디나 비밀번호를 입력해주세요", "아이디나 비밀번호 입력", JOptionPane.INFORMATION_MESSAGE);
 		}else{
 			//사용자가 값을 넣었으면 로그인 체크를 한다. 
-			System.out.println("사용자 로그인을 해야되는데.. 데이터베이스에 접근해야 됩니다. ");
+			System.out.println("사용자 로그인");
 			boolean logincheck = DaoLogin.loginCheck(loginTextField.getText(), new String(passwordField.getPassword()));
-			System.out.println("로그인 성공여부는 :"+logincheck);
+			System.out.println("로그인 성공여부 :"+logincheck);
 			
 			if(logincheck){
 				//로그인에 성공한 경우

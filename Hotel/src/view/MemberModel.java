@@ -6,7 +6,7 @@ package view;
 public class MemberModel extends AbstractTableModel {
 
 	 // 데이터 담기..
-	 Vector column = new Vector();// 컬럼정보를 가진 백터
+	 Vector<String> column = new Vector();// 컬럼정보를 가진 백터
 	 Vector list = new Vector(); // 레코드를 담을 백터(사람들의 정보를 담을 백터 )세로백터
 
 	 public MemberModel() {
@@ -30,14 +30,14 @@ public class MemberModel extends AbstractTableModel {
 
 	 @Override
 	 public int getColumnCount() {
-	  // 컬럼 사이즈 현재 add 6개했으니까!! 6이겠죠!
+	  // 컬럼 사이즈 현재  6
 	  
 	  return column.size();
 	 }
 
 	 @Override
 	 public int getRowCount() {
-	  return list.size(); // 레코드 사이즈..
+	  return list.size(); // 레코드 사이즈..?
 	  
 	 }
 

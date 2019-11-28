@@ -26,13 +26,13 @@ import javax.swing.JTextField;
 import assets.DBConnectionMgr;
 import view.panel.PanImgload;
 
-public class LoginDialog extends JFrame{
+public class ReserveDialog extends JFrame{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private insertLogin insert;
-	public LoginDialog() {
+	public ReserveDialog() {
 		super("객실 예약");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +50,7 @@ public class LoginDialog extends JFrame{
 		setVisible(true);
 	}
 	public static void main(String[] ar) {
-		new LoginDialog();
+		new ReserveDialog();
 	}
 }
 

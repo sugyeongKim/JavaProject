@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,14 +19,16 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
  //객실 그림
 public class PanSeat extends JPanel{
+	
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 	private insertLogin insert = new insertLogin(frame, "정보 입력");
 	private BufferedImage img = null;
-	JButton seatButton = new JButton();
-    JLabel[] label = new JLabel[4];
+	private JButton seatButton = new JButton();
+    private JLabel[] label = new JLabel[4];
     private int numSeat;
     
+    public PanSeat() {}
     public PanSeat(int numSeat) {
         this.numSeat = numSeat;
         img("roomOff1");
@@ -33,14 +36,14 @@ public class PanSeat extends JPanel{
  
         JPanel panImg = new InnerPanel();
         panImg.setBounds(0, 0, 99, 99);
-        panImg.setOpaque(false);
+        
         
         seatButton.setBorderPainted(false);
         seatButton.setFocusPainted(false);
         seatButton.setContentAreaFilled(false);
         seatButton.setBounds(0, 0, 99, 99);
         
-        panImg.add(seatButton);
+        this.add(seatButton);
         
         seatButton.addActionListener(new ActionListener() {
 			@Override
@@ -119,7 +122,7 @@ public class PanSeat extends JPanel{
         }
     }
  
-    public void img(String filename) {
+    public BufferedImage img(String filename) {
         // 이미지 받아오기 - gameOn, gameOff (로그인, 로그오프)
         try {
             img = ImageIO.read(new File("img/" + filename + ".png"));
@@ -128,6 +131,7 @@ public class PanSeat extends JPanel{
             System.exit(0);
         }
         repaint();
+		return img;
     }
 
     
