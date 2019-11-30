@@ -96,8 +96,6 @@ public class StaffDAO extends JPanel{
     
         private void initialize() {            // 액션이벤트와 버튼 컴포넌트 설정
         	
-        	
-
             jBtnShowRow = new JButton();
             jBtnShowRow.addActionListener(new ActionListener() {   
                 public void actionPerformed(ActionEvent e) {
@@ -117,7 +115,7 @@ public class StaffDAO extends JPanel{
                 public void actionPerformed(ActionEvent e) {
                     System.out.println(e.getActionCommand());        // 선택된 버튼의 텍스트값 출력
                     DefaultTableModel model2 = (DefaultTableModel)table.getModel();
-                    model2.addRow(new String[]{"","","","",""});  // 새테이블의 초기값
+                    model2.addRow(new String[]{"","","","","","","",""});  // 새테이블의 초기값
                 }
             });
             jBtnAddRow.setBounds(150,222,110,30);
@@ -132,7 +130,7 @@ public class StaffDAO extends JPanel{
                     DefaultTableModel model2 = (DefaultTableModel)table.getModel();
                     int row = table.getSelectedRow();
                     if(row<0) return;     // 선택이 안된 상태면 -1리턴
-                    String query = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION, department)" 
+                    String query = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION, DEPARTMENT)" 
                           + "values (?,?,?,?,?,?,?,?)"; 
 
                     try{
@@ -142,15 +140,15 @@ public class StaffDAO extends JPanel{
                         //rs = pstmt.executeQuery(); 
                         
                         // 물음표가 4개 이므로 4개 각각 입력해줘야한다.
-                        pstmt.setInt(1, (int) model2.getValueAt(row, 0));
-                        pstmt.setString(2, (String) model2.getValueAt(row, 1));
-                        pstmt.setString(3, (String) model2.getValueAt(row, 2));
-                        pstmt.setInt(4, (int) model2.getValueAt(row, 3));
-                        pstmt.setString(5, (String) model2.getValueAt(row, 4));
-                        pstmt.setString(6, (String) model2.getValueAt(row, 5));
-                        pstmt.setString(7, (String) model2.getValueAt(row, 6));
-                        pstmt.setString(8, (String) model2.getValueAt(row, 7));
-
+                        pstmt.setInt(1, Integer.valueOf((String) model2.getValueAt(row, 0)));
+                        pstmt.setString(2, String.valueOf(model2.getValueAt(row, 1)));
+                        pstmt.setString(3, String.valueOf (model2.getValueAt(row, 2)));
+                        pstmt.setInt(4,  Integer.valueOf((String)model2.getValueAt(row, 3)));
+                        pstmt.setString(5, String.valueOf (model2.getValueAt(row, 4)));
+                        pstmt.setString(6, String.valueOf (model2.getValueAt(row, 5)));
+                        pstmt.setString(7, String.valueOf (model2.getValueAt(row, 6)));
+                        pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
+                        	//뭐야 마지막 왜 안들어가
                         int cnt = pstmt.executeUpdate();
                         //pstmt.executeUpdate(); create insert update delete 
                         //pstmt.executeQuery(); select 
@@ -182,7 +180,7 @@ public class StaffDAO extends JPanel{
                     if(row<0) return;     // 선택이 안된 상태면 -1리턴
  
                     String query = "UPDATE STAFF SET NUMBER=?, NAME=?, GENDER=?, AGE=?, "
-                    		+ "TEL=?, ADDR=?, POSITION=?, department=? "+"where NUMBER=?";
+                    		+ "TEL=?, ADDR=?, POSITION=?, DEPARTMENT=? where NUMBER=?";
                     
                     try{
                         //Class.forName(driver);  // 드라이버 로딩
@@ -190,14 +188,14 @@ public class StaffDAO extends JPanel{
                         pstmt = con.prepareStatement(query);
                         
                         // 물음표가 4개 이므로 4개 각각 입력해줘야한다.
-                        pstmt.setInt(1, (int) model2.getValueAt(row, 0));
-                        pstmt.setString(2, (String) model2.getValueAt(row, 1));
-                        pstmt.setString(3, (String) model2.getValueAt(row, 2));
-                        pstmt.setInt(4, (int) model2.getValueAt(row, 3));
-                        pstmt.setString(5, (String) model2.getValueAt(row, 4));
-                        pstmt.setString(6, (String) model2.getValueAt(row, 5));
-                        pstmt.setString(7, (String) model2.getValueAt(row, 6));
-                        pstmt.setString(8, (String) model2.getValueAt(row, 7));
+                        pstmt.setInt(1, Integer.valueOf((String) model2.getValueAt(row, 0)));
+                        pstmt.setString(2, String.valueOf(model2.getValueAt(row, 1)));
+                        pstmt.setString(3, String.valueOf (model2.getValueAt(row, 2)));
+                        pstmt.setInt(4,  Integer.valueOf((String)model2.getValueAt(row, 3)));
+                        pstmt.setString(5, String.valueOf (model2.getValueAt(row, 4)));
+                        pstmt.setString(6, String.valueOf (model2.getValueAt(row, 5)));
+                        pstmt.setString(7, String.valueOf (model2.getValueAt(row, 6)));
+                        pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
 
                         int cnt = pstmt.executeUpdate();
                         //pstmt.executeUpdate(); create insert update delete 
@@ -228,7 +226,7 @@ public class StaffDAO extends JPanel{
                     int row = table.getSelectedRow();
                     if(row<0) return; // 선택이 안된 상태면 -1리턴
                     String query = "delete from STAFF where NUMBER= ?";
-    
+                   
                     try{
                         //Class.forName(driver);  // 드라이버 로딩
                         con = pool.getConnection();
@@ -276,7 +274,7 @@ public class StaffDAO extends JPanel{
 		if(!rs.next()) {
 		con = pool.getConnection();
 		sql = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION, department)"
-				+ " values ('"+number+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+position+"', '"+department+"');";
+				+ " values ('"+number+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+position+"','"+department+"');";
 		pstmt = con.prepareStatement(sql);
 		return pstmt.executeUpdate();
 		}

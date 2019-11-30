@@ -95,7 +95,7 @@ public class FrameLogin extends JFrame implements ActionListener{
  
         // 로그인버튼 추가
         bt = new JButton(new ImageIcon("img/LoginButton.png"));
-        bt.setBounds(650, 700, 208, 96);
+        bt.setBounds(696, 674, 208, 96);
         bt.addActionListener(this);//액션걸림
  
         // 버튼 투명처리

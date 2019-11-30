@@ -28,7 +28,7 @@ public class memberShow extends JPanel{
 	 	private JButton jBtnDelRow = null;
 	 	
 	 	
-	 	private String colNames[] = {"호실","이름","성별","나이","전화번호","주소","금액"};
+	 	private String colNames[] = {"룸 타입","입실시간","호실","이름","성별","나이","전화번호","주소","금액"};
 	 	private DefaultTableModel model = new DefaultTableModel(colNames, 0);
 	 	
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
@@ -44,14 +44,14 @@ public class memberShow extends JPanel{
 		   win.setTitle("회원 목록");
 		   win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		   win.add(this);
-		   win.setSize(510,400);
+		   win.setSize(820,400);
 		   setLocation(Setting.locationX, Setting.locationY);
 		   win.setVisible(true);
 
 		   table = new JTable(model); 
 		   table.addMouseListener(new JTableMouseListener());     
 		   scrollPane = new JScrollPane(table);  
-		   scrollPane.setSize(500, 200);
+		   scrollPane.setSize(800, 300);
 		   add(scrollPane);  
 		   initialize(); 
 		   //select();
@@ -65,7 +65,7 @@ public class memberShow extends JPanel{
         	int col = jtable.getSelectedColumn();         // 선택된 테이블의 열값
         	
         	System.out.println(model.getValueAt(row, col)); 
-        	select();
+        	//select();
            }// 선택된 위치의 값을 얻어내서 출력
         	@Override
         	public void mouseEntered(MouseEvent arg0) {
@@ -97,7 +97,7 @@ public class memberShow extends JPanel{
 		     rs = ps.executeQuery();
 			 
 		     while(rs.next()) {
-		    	 model.addRow(new Object[] {rs.getString("num"),
+		    	 model.addRow(new Object[] {rs.getString("ROOM_TYPE"),rs.getString("INSERTDATE"),rs.getString("num"),
 		    		 rs.getString("name"),rs.getString("gender"),rs.getString("age"),
 		    		 rs.getString("tel"),rs.getString("addr"),rs.getString("total_amount")});
 		     }
@@ -124,7 +124,7 @@ public class memberShow extends JPanel{
 		                    //model2.addRow(new String[]{"","","","","","",""});  // 새테이블의 초기값
 		                }
 		            });
-		            jBtnAddRow.setBounds(180,222,110,30);
+		            jBtnAddRow.setBounds(50,312,95,35);
 		            jBtnAddRow.setText("조회");
 		            add(jBtnAddRow);
 		            
@@ -156,7 +156,7 @@ public class memberShow extends JPanel{
 		                    model2.removeRow(row);    // 테이블 상의 한줄 삭제
 		                }
 		            });
-		            jBtnDelRow.setBounds(320, 222, 110,30);
+		            jBtnDelRow.setBounds(200, 312, 95,35);
 		            jBtnDelRow.setText("삭제");
 		            add(jBtnDelRow);
 

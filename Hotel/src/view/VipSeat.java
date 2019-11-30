@@ -3,7 +3,6 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,37 +21,55 @@ public class VipSeat extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
-	private insertLogin insert = new insertLogin(frame, "정보 입력");
+	private insertReserv insert;
+	private StatusReserv status;
 	private BufferedImage img = null;
-	private JButton seatButton = new JButton();
+	private JButton seatButton = new JButton("off");
     private JLabel[] label = new JLabel[4];
     private int numSeat;
     
     public VipSeat() {}
-    public VipSeat(int numSeat) {
-        this.numSeat = numSeat;
+    public VipSeat(int num) {
+        this.numSeat = num;
         img("VipRoomOff");
         setLayout(null);
  
         JPanel panImg = new InnerPanel();
         panImg.setBounds(0, 0, 99, 99);
         
-        
+        seatButton.setForeground((Color.WHITE));
         seatButton.setBorderPainted(false);
         seatButton.setFocusPainted(false);
         seatButton.setContentAreaFilled(false);
         seatButton.setBounds(0, 0, 99, 99);
         
         this.add(seatButton);
-        
+
+		insert =new insertReserv(frame, "vip 예약", numSeat);
+		
         seatButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println(VipSeat.this.numSeat);
-				insert.setNum(VipSeat.this.numSeat+1);
-				insert.setVisible(true);
-				img("VipRoomOn");
+				JButton button = (JButton)e.getSource();
+				if(button.getText().equals("off")) {
+					insert.setVisible(true);
+					if(insert.check()) {
+			        	button.setText("on");
+			        	img("VipRoomOn");
+					}		
+					//System.out.println(PanSeat.this.numSeat);
+					seatButton.setForeground(new Color(128,128,128));
+				}
+				else {
+					//status=new StatusReserv(frame, "Vip 객실 상태",numSeat);
+					//status.setNum(numSeat);
+					status.setVisible(true);
+				}
+				if(insert.check()) {
+		        	button.setText("on");
+		        	img("VipRoomOn");
+				}		
 			}
 		});
         /*seatButton[numSeat].addActionListener(new ActionListener() {
@@ -71,13 +87,8 @@ public class VipSeat extends JPanel{
         int posLabel = 10;
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
-            	label[i] = new JLabel("300"+(numSeat + 1) + "호");
-                if (numSeat+1==10)
-                	label[i] = new JLabel("30"+(numSeat + 1) + "호");
-                if(numSeat+1>10)
-                	label[i]= new JLabel("40"+(numSeat+1)+"호");
-                if(numSeat+1==20)
-                	label[i]= new JLabel("40"+(numSeat+1)+"호");
+                label[i] = new JLabel(numSeat + "호");
+               /// if (numSeat+1==10)
             }
             else
                 label[i] = new JLabel("");

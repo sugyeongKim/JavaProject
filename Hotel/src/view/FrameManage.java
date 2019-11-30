@@ -1,27 +1,29 @@
 package view;
  
 import java.awt.Component;
-import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import view.panel.PanImgload;
+import assets.DBConnectionMgr;
 import assets.Setting;
  
 @SuppressWarnings("serial")
 public class FrameManage extends JFrame implements ActionListener{
     public JLayeredPane layeredPane = new JLayeredPane();
-    private PanImgload backGround = new PanImgload("img/backgroundRoom.png");
+    //private PanImgload backGround = new PanImgload("img/backgroundRoom.png");
     int posXpanSeat, posYpanSeat;
     PanSeat[] pan = new PanSeat[20];
     VipSeat[] vpan = new VipSeat[20];
@@ -36,12 +38,26 @@ public class FrameManage extends JFrame implements ActionListener{
     ImageIcon moneypress = new ImageIcon("img/moneyclick.gif");
     ImageIcon staffpress = new ImageIcon("img/staffclick.gif");
 
+    WindowAdapter exitListener = new WindowAdapter() {
+    	public void windowClosing(WindowEvent e) {
+    		
+            int confirm = JOptionPane.showOptionDialog(
+                 null, "닫으면 일부 데이터가 초기화됩니다", 
+                 "Exit Confirmation", JOptionPane.CLOSED_OPTION, 
+                 JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (confirm == 0) {
+            	deletemember();
+            	System.exit(0);
+            }
+        }
+    };
     public FrameManage() {
         setLayout(null);
         setVisible(true);
         setTitle("객실 현황");
         setSize(Setting.bDimen);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.addWindowListener(exitListener);
+        
         setLocation(Setting.locationX, Setting.locationY);
         //버튼 투명처리
         
@@ -64,7 +80,7 @@ public class FrameManage extends JFrame implements ActionListener{
         seat50.setOpaque(false);
         seat50.setBounds(15, 129, 1368, 686);
         for ( int seat = 0; seat < 20; seat++) {     
-        	pan[seat] = new PanSeat(seat);  
+        	pan[seat] = new PanSeat(seat+1001);  
             if (seat == 10  && seat != 0 ) {
                 posXpanSeat = 0;
                 posYpanSeat += 140;
@@ -80,7 +96,7 @@ public class FrameManage extends JFrame implements ActionListener{
         posYpanSeat += 140;
         
         for (int seat = 0; seat < 20; seat++) {     
-        	vpan[seat] = new VipSeat(seat);  
+        	vpan[seat] = new VipSeat(seat+2001);  
             if (seat == 10  && seat != 0) {
                 posXpanSeat = 0;
                 posYpanSeat += 140;
@@ -89,10 +105,10 @@ public class FrameManage extends JFrame implements ActionListener{
             vpan[seat].setBounds(posXpanSeat, posYpanSeat, 99, 99);
             posXpanSeat += 135;
             seat50.add(vpan[seat]);
-            
+              
         }
         //560
-        add(setJLayered(backGround, seat50, memberButton, moneyButton, staffButton));
+        add(setJLayered(seat50, memberButton, moneyButton, staffButton));
         add(layeredPane);
         
         memberButton.setPressedIcon(memberpress);
@@ -140,6 +156,28 @@ public class FrameManage extends JFrame implements ActionListener{
 		else if(obj == staffButton) {
 			System.out.println("직원");
 			ShowStaff();
+		}
+	}
+	
+	public void deletemember() {
+		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		String sql = null;
+		ResultSet rs = null;
+		
+		try {
+			con = pool.getConnection();
+		
+		sql = " delete from member ";
+		pstmt = con.prepareStatement(sql);
+		int cnt = pstmt.executeUpdate();
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void ShowMember() {

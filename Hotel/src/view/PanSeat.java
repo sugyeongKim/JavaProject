@@ -3,7 +3,6 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,37 +21,62 @@ public class PanSeat extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
-	private insertLogin insert = new insertLogin(frame, "정보 입력");
+	private insertReserv insert;
+	private StatusReserv status;
 	private BufferedImage img = null;
-	private JButton seatButton = new JButton();
+	private static String bname="off";
+	public  JButton seatButton = new JButton(bname);
     private JLabel[] label = new JLabel[4];
     private int numSeat;
     
     public PanSeat() {}
-    public PanSeat(int numSeat) {
-        this.numSeat = numSeat;
+    public PanSeat(int num) {
+        this.numSeat = num;
         img("roomOff1");
         setLayout(null);
  
         JPanel panImg = new InnerPanel();
         panImg.setBounds(0, 0, 99, 99);
         
-        
+       // seatButton.setForeground((Color.WHITE));
         seatButton.setBorderPainted(false);
         seatButton.setFocusPainted(false);
         seatButton.setContentAreaFilled(false);
         seatButton.setBounds(0, 0, 99, 99);
         
         this.add(seatButton);
-        
+
+		insert = new insertReserv(frame, "일반 예약", numSeat);
+
+
+
+		
         seatButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("click: "+seatButton.getText());
+		        seatButton.setText(getName());
 				// TODO Auto-generated method stub
-				System.out.println(PanSeat.this.numSeat);
-				insert.setNum(PanSeat.this.numSeat+1);
-				insert.setVisible(true);
-				img("roomOn");
+				//JButton button = (JButton)e.getSource();
+				if(seatButton.getText().equals("off")) {
+					if(insert.visible()) {
+						setonoff("on", "roomOn");
+				        seatButton.setText(getName());
+					}
+					else {
+						setonoff("off", "roomOff1");
+				        seatButton.setText(getName());
+					}
+					//insert.setNum(PanSeat.this.numSeat);
+						
+					//System.out.println(PanSeat.this.numSeat);
+				}
+				else {		
+					status = new StatusReserv(frame, "일반 객실 상태", numSeat);
+					//seatButton.setForeground(new Color(128,128,128));
+					status.setNum(numSeat);
+					status.setVisible(true);
+				}
 			}
 		});
         
@@ -63,16 +86,8 @@ public class PanSeat extends JPanel{
         panContent.setBounds(0, 0, 99, 99);
         int posLabel = 10;
         for (int i = 0; i < 4; i++) {
-            if (i == 0) {
-                label[i] = new JLabel("100"+(numSeat + 1) + "호");
-                if (numSeat+1==10)
-                	label[i] = new JLabel("10"+(numSeat + 1) + "호");
-                if(numSeat+1>10)
-                	label[i]= new JLabel("20"+(numSeat+1)+"호");
-                if(numSeat+1==20)
-                	label[i]= new JLabel("20"+(numSeat+1)+"호");
-                //여기 위에는 일반룸
-            }
+            if (i == 0)
+                label[i] = new JLabel(numSeat + "호");
             else
                 label[i] = new JLabel("");
  
@@ -108,7 +123,7 @@ public class PanSeat extends JPanel{
         frameTest.setSize(99, 144);
         frameTest.setVisible(true);
     }
- 
+    
     class InnerPanel extends JPanel {
         private static final long serialVersionUID = 1547128190348749556L;
         public void paint(Graphics g) {
@@ -116,7 +131,6 @@ public class PanSeat extends JPanel{
             g.drawImage(img, 0, 0, null);
         }
     }
- 
     public BufferedImage img(String filename) {
         // 이미지 받아오기 - gameOn, gameOff (로그인, 로그오프)
         try {
@@ -128,7 +142,21 @@ public class PanSeat extends JPanel{
         repaint();
 		return img;
     }
-
+    public void setName(String name) {
+    	bname = name;
+    	System.out.println("setName:"+bname);
+    }
+    
+    public String getName() {
+    	System.out.println("getName:"+bname);
+    	return bname;
+    }
+    public void setonoff(String status, String fname) {
+    	System.out.println(status+","+fname);
+        bname=status;
+        System.out.println(status+","+fname+"@@");
+    	img(fname);
+    }
     
     
 }
