@@ -16,7 +16,7 @@ public class MemberModel extends AbstractTableModel {
 	  column.add("나이");
 	  column.add("연락처");
 	  column.add("주소");
-	  column.add("마일리지");
+	  column.add("요금");
 	 }
 
 	 // 컬럼명을 넣어주자!!

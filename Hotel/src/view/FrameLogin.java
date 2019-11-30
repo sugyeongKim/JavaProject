@@ -23,6 +23,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import Main.Main;
+import assets.Setting;
 import control.DaoLogin;
  //처음 로그인화면
 public class FrameLogin extends JFrame implements ActionListener{
@@ -53,6 +54,7 @@ public class FrameLogin extends JFrame implements ActionListener{
         setTitle("미림미림");
         setSize(1600, 900);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocation(Setting.locationX, Setting.locationY);
  
         // 레이아웃 설정
         setLayout(null);

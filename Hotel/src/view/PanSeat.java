@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
  //객실 그림
+ //일반호실
 public class PanSeat extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
@@ -55,14 +56,7 @@ public class PanSeat extends JPanel{
 				img("roomOn");
 			}
 		});
-        /*seatButton[numSeat].addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				img("roomOn");
-			}
-		});
-        */
+        
         //상태정보 패널
         JPanel panContent = new JPanel();
         panContent.setLayout(null);
@@ -70,18 +64,19 @@ public class PanSeat extends JPanel{
         int posLabel = 10;
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
-                label[i] = new JLabel("40"+(numSeat + 1) + "호");
-                if(numSeat+1>=10)
-                	label[i]= new JLabel("4"+(numSeat+1)+"호");
-                if(numSeat+1>=18)
-                	label[i]= new JLabel("50"+(numSeat-16)+"호");
-                if(numSeat+1>=27)
-                	label[i]= new JLabel("5"+(numSeat-16)+"호");
+                label[i] = new JLabel("100"+(numSeat + 1) + "호");
+                if (numSeat+1==10)
+                	label[i] = new JLabel("10"+(numSeat + 1) + "호");
+                if(numSeat+1>10)
+                	label[i]= new JLabel("20"+(numSeat+1)+"호");
+                if(numSeat+1==20)
+                	label[i]= new JLabel("20"+(numSeat+1)+"호");
+                //여기 위에는 일반룸
             }
             else
                 label[i] = new JLabel("");
  
-            label[i].setBounds(27, posLabel, 80, 15);
+            label[i].setBounds(24, posLabel, 80, 15);
             posLabel += 16;
             label[i].setForeground(new Color(255,255,255));
             label[i].setFont(new Font("배달의민족 주아체", 1, 16));

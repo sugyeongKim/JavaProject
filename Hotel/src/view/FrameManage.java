@@ -23,9 +23,11 @@ public class FrameManage extends JFrame implements ActionListener{
     public JLayeredPane layeredPane = new JLayeredPane();
     private PanImgload backGround = new PanImgload("img/backgroundRoom.png");
     int posXpanSeat, posYpanSeat;
-    PanSeat[] pan = new PanSeat[34];
+    PanSeat[] pan = new PanSeat[20];
+    VipSeat[] vpan = new VipSeat[20];
     JPanel seat50 = new JPanel();
-    JButton[] seatButton = new JButton[34];
+    JButton[] seatButton = new JButton[20];
+    JButton[] vseatButton = new JButton[20];
     JButton memberButton = new JButton(new ImageIcon("img/member.png"));
     JButton moneyButton = new JButton(new ImageIcon("img/money.png"));
     JButton staffButton = new JButton(new ImageIcon("img/staff.png"));
@@ -35,7 +37,6 @@ public class FrameManage extends JFrame implements ActionListener{
     ImageIcon staffpress = new ImageIcon("img/staffclick.gif");
 
     public FrameManage() {
-        // Configure this Frame
         setLayout(null);
         setVisible(true);
         setTitle("객실 현황");
@@ -62,9 +63,9 @@ public class FrameManage extends JFrame implements ActionListener{
         seat50.setLayout(null);
         seat50.setOpaque(false);
         seat50.setBounds(15, 129, 1368, 686);
-        for ( int seat = 0; seat < 34; seat++) {
-            pan[seat] = new PanSeat(seat);       
-            if (seat == 10  && seat != 0 || seat == 17 ||seat == 27) {
+        for ( int seat = 0; seat < 20; seat++) {     
+        	pan[seat] = new PanSeat(seat);  
+            if (seat == 10  && seat != 0 ) {
                 posXpanSeat = 0;
                 posYpanSeat += 140;
             }
@@ -74,18 +75,22 @@ public class FrameManage extends JFrame implements ActionListener{
             posXpanSeat += 135;
             seat50.add(pan[seat]);
             
-            //seat50.add(seatButton[seat]);
-            /*seatButton[seat].addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					System.out.println(numSeat);
-				}
-			});*/
         }
+        posXpanSeat = 0;
+        posYpanSeat += 140;
         
-        System.out.println(pan[0].getX()+","+pan[0].getY());
-        System.out.println(pan[27].getX()+","+pan[27].getY());
+        for (int seat = 0; seat < 20; seat++) {     
+        	vpan[seat] = new VipSeat(seat);  
+            if (seat == 10  && seat != 0) {
+                posXpanSeat = 0;
+                posYpanSeat += 140;
+            }
+            
+            vpan[seat].setBounds(posXpanSeat, posYpanSeat, 99, 99);
+            posXpanSeat += 135;
+            seat50.add(vpan[seat]);
+            
+        }
         //560
         add(setJLayered(backGround, seat50, memberButton, moneyButton, staffButton));
         add(layeredPane);
@@ -98,11 +103,6 @@ public class FrameManage extends JFrame implements ActionListener{
         moneyButton.addActionListener(this);
         staffButton.addActionListener(this);
         }
-
-    public static void main(String[] args) throws Exception {
-        FrameManage manageView = new FrameManage();
-        manageView.setRectangles(FrameManage.class, manageView, Setting.class, Setting.getInstance());
-    }
  
     // Setting inner Methods
     private JComponent setJLayered(Component... components) {
@@ -149,4 +149,9 @@ public class FrameManage extends JFrame implements ActionListener{
 	public void ShowStaff() {
 		StaffDAO s = new StaffDAO();
 	}
+	
+    public static void main(String[] args) throws Exception {
+        FrameManage manageView = new FrameManage();
+        manageView.setRectangles(FrameManage.class, manageView, Setting.class, Setting.getInstance());
+    }
 }

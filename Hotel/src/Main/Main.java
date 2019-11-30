@@ -6,11 +6,7 @@ import view.FrameLogin;
 import view.FrameManage;
 
 public class Main {
-	private FrameManage frameManage;
 	private FrameLogin frameLogin;
-	
-	private DaoLogin daoLogin;
-	
 	
 	public static void main(String[] ar) throws Exception {
 		Main main = new Main();

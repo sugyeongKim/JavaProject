@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import assets.DBConnectionMgr;
+import assets.Setting;
 //얘 수정해야댐 얘 잘 모르겠다
 public class memberShow extends JPanel{
 	 	private JTable table;   
@@ -27,7 +28,7 @@ public class memberShow extends JPanel{
 	 	private JButton jBtnDelRow = null;
 	 	
 	 	
-	 	private String colNames[] = {"호실","이름","성별","나이","전화번호","주소","마일리지"};
+	 	private String colNames[] = {"호실","이름","성별","나이","전화번호","주소","금액"};
 	 	private DefaultTableModel model = new DefaultTableModel(colNames, 0);
 	 	
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
@@ -44,6 +45,7 @@ public class memberShow extends JPanel{
 		   win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		   win.add(this);
 		   win.setSize(510,400);
+		   setLocation(Setting.locationX, Setting.locationY);
 		   win.setVisible(true);
 
 		   table = new JTable(model); 
@@ -52,7 +54,7 @@ public class memberShow extends JPanel{
 		   scrollPane.setSize(500, 200);
 		   add(scrollPane);  
 		   initialize(); 
-		   select();
+		   //select();
 
 	   }
 	   
@@ -97,7 +99,7 @@ public class memberShow extends JPanel{
 		     while(rs.next()) {
 		    	 model.addRow(new Object[] {rs.getString("num"),
 		    		 rs.getString("name"),rs.getString("gender"),rs.getString("age"),
-		    		 rs.getString("tel"),rs.getString("addr"),rs.getString("mileage")});
+		    		 rs.getString("tel"),rs.getString("addr"),rs.getString("total_amount")});
 		     }
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -116,9 +118,10 @@ public class memberShow extends JPanel{
 		            jBtnAddRow = new JButton();
 		            jBtnAddRow.addActionListener(new ActionListener() {   
 		                public void actionPerformed(ActionEvent e) {
-		                    System.out.println(e.getActionCommand());        // 선택된 버튼의 텍스트값 출력
-		                    DefaultTableModel model2 = (DefaultTableModel)table.getModel();
-		                    model2.addRow(new String[]{"","","","",""});  // 새테이블의 초기값
+		                    System.out.println(e.getActionCommand());    
+		                    select();// 선택된 버튼의 텍스트값 출력
+		                    //DefaultTableModel model2 = (DefaultTableModel)table.getModel();
+		                    //model2.addRow(new String[]{"","","","","","",""});  // 새테이블의 초기값
 		                }
 		            });
 		            jBtnAddRow.setBounds(180,222,110,30);
@@ -135,7 +138,6 @@ public class memberShow extends JPanel{
 		                    String query = "delete from member";
 
 		                    try{
-		                       // Class.forName(driver);  // 드라이버 로딩
 		                    	con = pool.getConnection(); // DB 연결
 		                    	ps = con.prepareStatement(query);  
 		                        // 물음표가 1개 이므로 4개 각각 입력해줘야한다.
