@@ -1,7 +1,7 @@
 package Main;
 
 import assets.Setting;
-import control.DaoLogin;
+import view.DaoLogin;
 import view.FrameLogin;
 import view.FrameManage;
 

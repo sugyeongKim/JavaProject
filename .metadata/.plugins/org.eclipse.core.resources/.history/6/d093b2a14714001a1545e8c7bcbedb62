@@ -1,0 +1,232 @@
+package view;
+ 
+import java.awt.Component;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import assets.DBConnectionMgr;
+import assets.Setting;
+ 
+@SuppressWarnings("serial")
+public class FrameManage extends JFrame implements ActionListener{
+    public JLayeredPane layeredPane = new JLayeredPane();
+    //private PanImgload backGround = new PanImgload("img/backgroundRoom.png");
+    int posXpanSeat, posYpanSeat;
+    PanSeat[] pan = new PanSeat[20];
+    VipSeat[] vpan = new VipSeat[20];
+    JPanel seat50 = new JPanel();
+    JButton[] seatButton = new JButton[20];
+    JButton[] vseatButton = new JButton[20];
+    
+    JButton memberButton = new JButton(new ImageIcon("img/memberOn.png"));
+    JButton moneyButton = new JButton(new ImageIcon("img/moneyOn.png"));
+    JButton staffButton = new JButton(new ImageIcon("img/staffOn.png"));
+    
+    ImageIcon memberpress = new ImageIcon("img/memberPress.gif");
+    ImageIcon moneypress = new ImageIcon("img/moneyPress.gif");
+    ImageIcon staffpress = new ImageIcon("img/staffPress.gif");
+    
+    ImageIcon memberRoll = new ImageIcon("img/memberRoll.gif");
+    ImageIcon moneyRoll = new ImageIcon("img/moneyRoll.gif");
+    ImageIcon staffRoll = new ImageIcon("img/staffRoll.gif");
+
+    WindowAdapter exitListener = new WindowAdapter() {
+    	public void windowClosing(WindowEvent e) {
+            int confirm = JOptionPane.showOptionDialog(
+                 null, "닫으면 일부 데이터가 초기화됩니다", 
+                 "Exit Confirmation", JOptionPane.CLOSED_OPTION, 
+                 JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (confirm == 0) {
+            	deletemember();
+            	System.exit(0);
+            }
+        }
+    };
+    public FrameManage() {
+        setLayout(null);
+        setVisible(true);
+        setTitle("객실 현황");
+        setSize(Setting.bDimen);
+        this.addWindowListener(exitListener);
+        
+        setLocation(Setting.locationX, Setting.locationY);
+        //버튼 투명처리
+        
+        
+        memberButton.setBorderPainted(false);
+        memberButton.setFocusPainted(false);
+        memberButton.setContentAreaFilled(false);
+        
+        moneyButton.setBorderPainted(false);
+        moneyButton.setFocusPainted(false);
+        moneyButton.setContentAreaFilled(false);
+        
+        staffButton.setBorderPainted(false);
+        staffButton.setFocusPainted(false);
+        staffButton.setContentAreaFilled(false);
+        
+        
+        // 좌석 패널 시작 시작점 165 129
+ 
+        seat50.setLayout(null);
+        seat50.setOpaque(false);
+        seat50.setBounds(15, 129, 1368, 686);
+        for ( int seat = 0; seat < 20; seat++) {     
+        	pan[seat] = new PanSeat(seat+1001);  
+            if (seat == 10  && seat != 0 ) {
+                posXpanSeat = 0;
+                posYpanSeat += 140;
+            }
+            
+            pan[seat].setBounds(posXpanSeat, posYpanSeat, 99, 99);
+            //seatButton[seat].setBounds(posXpanSeat, posYpanSeat, 99, 99);
+            posXpanSeat += 135;
+            seat50.add(pan[seat]);
+            
+        }
+        posXpanSeat = 0;
+        posYpanSeat += 140;
+        
+        for (int seat = 0; seat < 20; seat++) {     
+        	vpan[seat] = new VipSeat(seat+2001);  
+            if (seat == 10  && seat != 0) {
+                posXpanSeat = 0;
+                posYpanSeat += 140;
+            }
+            
+            vpan[seat].setBounds(posXpanSeat, posYpanSeat, 99, 99);
+            posXpanSeat += 135;
+            seat50.add(vpan[seat]);
+              
+        }
+        //560
+        add(setJLayered(seat50, memberButton, moneyButton, staffButton));
+        add(layeredPane);
+        
+        memberButton.setPressedIcon(memberpress);
+        moneyButton.setPressedIcon(moneypress);
+        staffButton.setPressedIcon(staffpress);
+        
+        memberButton.setRolloverIcon(memberRoll);
+        moneyButton.setRolloverIcon(moneyRoll);
+        staffButton.setRolloverIcon(staffRoll);
+        
+        memberButton.addActionListener(this);
+        moneyButton.addActionListener(this);
+        staffButton.addActionListener(this);
+        }
+ 
+    // Setting inner Methods
+    private JComponent setJLayered(Component... components) {
+        int i = 0;
+        for (Component component : components)
+            layeredPane.add(component, new Integer(i++));
+        return layeredPane;
+    }
+ 
+    // Reflection Practice
+    public void setRectangles(Class<?> clazz, Object instance, Class<?> targetClass, Object target) throws Exception {
+        Object tempObject = null;
+        for (Field field : clazz.getDeclaredFields()) {
+            if ((tempObject = field.get(instance)) instanceof JComponent) {
+                ((JComponent) tempObject).setBounds((Rectangle) targetClass.getDeclaredField(field.getName()).get(target));
+                ((JComponent) tempObject).setOpaque(false);
+                ((JComponent) tempObject).setLayout(null);
+            }
+            if (tempObject instanceof Runnable)
+                new Thread((Runnable) tempObject).start();
+        }
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object obj = e.getSource();
+		if(obj == memberButton) {
+			System.out.println("회원");
+			ShowMember();
+		}
+		else if(obj == moneyButton) {
+			System.out.println("매상");
+			showSales();
+		}
+		else if(obj == staffButton) {
+			System.out.println("직원");
+			ShowStaff();
+		}
+	}
+	
+	public void deletemember() {
+		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		String sql = null;
+		ResultSet rs = null;
+		
+		try {
+			con = pool.getConnection();
+		
+		sql = " delete from member ";
+		pstmt = con.prepareStatement(sql);
+		int cnt = pstmt.executeUpdate();
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void ShowMember() {
+		memberShow m = new memberShow();
+	}
+	
+	public void ShowStaff() {
+		StaffDAO s = new StaffDAO();
+	}
+	
+	public void showSales() {
+		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		String sql = null;
+		ResultSet rs = null;
+
+		try {
+			con = pool.getConnection();
+			sql = " select sum(TOTAL_AMOUNT) as total from member";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				//System.out.println(rs.getString("name"));
+				JOptionPane.showOptionDialog(
+		                 null, rs.getString("total"), 
+		                 "현재 매출액", JOptionPane.CANCEL_OPTION, 
+		                 JOptionPane.QUESTION_MESSAGE, null, null, null);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+    public static void main(String[] args) throws Exception {
+        FrameManage manageView = new FrameManage();
+        manageView.setRectangles(FrameManage.class, manageView, Setting.class, Setting.getInstance());
+    }
+}

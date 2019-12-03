@@ -15,7 +15,7 @@ public class Setting {
 	private static Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 	// prefix 'b' means Basic setting
-	public static Font bFont = new Font("배달의민족 한나", Font.BOLD, 12);
+	//public static Font bFont = new Font("배달의민족 한나", Font.BOLD, 12);
 	public static Color bColor = new Color(36, 205, 198);
 	public static Point bPoint = new Point(width, height); // 1600, 900
 	public static Dimension bDimen = new Dimension(width, height);

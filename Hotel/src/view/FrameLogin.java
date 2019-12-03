@@ -24,7 +24,6 @@ import javax.swing.JTextField;
 
 import Main.Main;
 import assets.Setting;
-import control.DaoLogin;
  //처음 로그인화면
 public class FrameLogin extends JFrame implements ActionListener{
 
@@ -39,9 +38,6 @@ public class FrameLogin extends JFrame implements ActionListener{
     // 메인
     public static void main(String[] args) throws Exception {
         FrameLogin frameLogin = new FrameLogin();
-        
-        //H2DB_Initializer hdInitializer = new H2DB_Initializer();
-       // hdInitializer.initDatabase();
         
         DaoLogin daoLogin = new DaoLogin();
         daoLogin.insertUser();
@@ -84,6 +80,7 @@ public class FrameLogin extends JFrame implements ActionListener{
         loginTextField.setFont(font);
         loginTextField.setForeground(Color.BLACK);
         loginTextField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        
         // 패스워드
         passwordField = new JPasswordField(15);
         passwordField.setBounds(718, 555, 280, 40);
@@ -132,7 +129,7 @@ public class FrameLogin extends JFrame implements ActionListener{
 		System.out.println(loginTextField.getText());
 		System.out.println(passwordField.getPassword());
 		
-		//사용자가 값을 넣었는지 체크한 후에
+		//사용자가 값을 넣었는지 체크
 		if(loginTextField.getText().equals("")|| new String(passwordField.getPassword()).equals("")){
 			JOptionPane.showMessageDialog(null, "아이디나 비밀번호를 입력해주세요", "아이디나 비밀번호 입력", JOptionPane.INFORMATION_MESSAGE);
 		}else{
@@ -143,13 +140,12 @@ public class FrameLogin extends JFrame implements ActionListener{
 			
 			if(logincheck){
 				//로그인에 성공한 경우
-				JOptionPane.showMessageDialog(null, "로그인 성공", "로그인 성공", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "로그인 성공", "Success", JOptionPane.INFORMATION_MESSAGE);
 				//TODO main 에게 이거는 닫아주고, 새로운 매니지 뷰 화면 열어줘 요청
 				main.showFrameManage(this);
 			}else{
-				
 				//로그인에 실패한 경우
-				JOptionPane.showMessageDialog(null, "로그인 실패", "로그인 실패", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null,  "로그인 실패","Fail", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 	}

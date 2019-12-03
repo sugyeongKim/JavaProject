@@ -108,11 +108,13 @@ class insertReserv extends JDialog{
 	
     
 	MyDocumentListener MyDocumentListener = new MyDocumentListener();
+	
 	public boolean visible() {
 		this.setVisible(!chk);
 		chk=!chk;
 		return chk;
 	}
+	
 	public insertReserv(JFrame frame, String title, int num) {
 		super(frame,title);
 		if(title.equals("일반 예약")) typeString="General";
@@ -127,13 +129,6 @@ class insertReserv extends JDialog{
         //배경
         MyPanel panel = new MyPanel();
         panel.setBounds(0, 0, 400, 300);
-        
-       /* try {
-            img = ImageIO.read(new File("img/backgroundDB.png"));
-        } catch (IOException e) {
-            System.out.println("이미지 불러오기 실패");
-            System.exit(0);
-        }*/
         
         
         //개인정보 입력
@@ -202,14 +197,11 @@ class insertReserv extends JDialog{
 					//db에 데이터 넣는 부분
 					int i=insertData(typeString,num, name.getText(), gender.getText(), 
 							Integer.parseInt(age.getText()), tel.getText(), addr.getText(), Integer.parseInt(amountLabel.getText()));
-					
 					if(i>0) {
 						JOptionPane.showMessageDialog(null, "입실이 되었습니다!", "입실 성공", JOptionPane.INFORMATION_MESSAGE);
 						chk=true;
 						System.out.println("입실 성공");
-						if(num<2000)
-							panSeat.setonoff("on", "roomOn");
-						else panSeat.setonoff("on", "VipRoomOn");
+						addRoom(num,name.getText(),Integer.parseInt(amountLabel.getText()));
 						textclear();
 						//여기다 넣으면 되지 않을까 싶다
 					}
@@ -228,7 +220,6 @@ class insertReserv extends JDialog{
 				setVisible(false);
 			}
 		});
-		
 		layeredPane.add(panel);
         add(layeredPane);
         setLocation(Setting.locationX, Setting.locationY);
@@ -271,6 +262,7 @@ class insertReserv extends JDialog{
     	gender.setText("");
     	tel.setText("");
     }
+    
 	public int insertData(String type, int num, String name, String gender, int age, String tel, String addr, int amount) throws Exception {
 
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
@@ -290,24 +282,48 @@ class insertReserv extends JDialog{
 		con = pool.getConnection();
 		sql = "insert into member (ROOM_TYPE, INSERTDATE, NUM, NAME, GENDER, AGE, TEL, ADDR, TOTAL_AMOUNT) values ('"+type+"',CURRENT_TIMESTAMP,'"+num+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+amount+"');";
 		pstmt = con.prepareStatement(sql);
+		//insertRoom(num, 1, name, amount);
 		return pstmt.executeUpdate();
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "ee이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
 			System.out.println("이미 입실이 되어있는 방입니다!");
 			return 0;
 		}
+	}
+	
+	public void addRoom(int num, String name, int amount) throws Exception {
+		//여기에서 room db에 들어갈 것 만ㄷ르구,,
+		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		String sql = null;
+		ResultSet rs = null;
+		
+		con = pool.getConnection();
+		sql = " select chk from room where NUM='"+num+"'";
+		pstmt = con.prepareStatement(sql);
+		rs = pstmt.executeQuery();
+		
+		//if(!rs.next()) {
+		con = pool.getConnection();
+		sql = "update room set chk=1, user_name='"+name+"',IN_DATE = CURRENT_TIMESTAMP, SERVICE_PRICE='"+amount+"' where num = "+num;
+		pstmt = con.prepareStatement(sql);
+		pstmt.executeUpdate();
+		//}
+		//else {
+			//JOptionPane.showMessageDialog(null, "22이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
+			//System.out.println("이미 입실이 되어있는 방입니다!");
+		
+		//}
 	}
 	
 	public int getNum() {
 		return roomNum;
 	}
 
-	public void setNum(int numSeat) {
-		// TODO Auto-generated method stub
-		roomNum=numSeat;
-	}
-	
 	class MyPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 		public void paint(Graphics g) {
@@ -325,38 +341,38 @@ class insertReserv extends JDialog{
 		if(typeString.equals("General")) {
 			if(onedayBox.isSelected()) {
 				money = "10000";
-				staydate=1;
+				 
 			}
 			else if (twodayBox.isSelected()) {
 				money = "15000";
-				staydate=2;
+ 
 			}
 			else if (threedayBox.isSelected()) {
 				money = "20000";
-				staydate=3;
+ 
 			}
 			else {
 				money = "25000";
-				staydate=4;
+ 
 			}
 			amountLabel.setText(money);
 			}
 		else {
 			if(onedayBox.isSelected()) {
 				money = "40000";
-				staydate=1;
+ 
 			}
 			else if (twodayBox.isSelected()) {
 				money = "50000";
-				staydate=2;
+		 
 			}
 			else if (threedayBox.isSelected()) {
 				money = "60000";
-				staydate=3;
+			 
 			}
 			else {
 				money = "70000";
-				staydate=4;
+			 
 			}
 			amountLabel.setText(money);
 			}
@@ -372,7 +388,6 @@ class StatusReserv extends JDialog{
 	private static int Num;
 	PanSeat panSeat = new PanSeat();
 	private JLabel nameLabel;
-	private JLabel userLabel = new JLabel();
 	private JLabel daymoneyLabel = new JLabel("현재 금액");
 	private JLabel roomServiceLabel =  new JLabel("룸서비스");
 	//private ButtonGroup group = new ButtonGroup();
@@ -384,12 +399,8 @@ class StatusReserv extends JDialog{
 	
 	private JButton savePriceButton = new JButton("저장");
 	private JButton outRoomButton = new JButton("퇴실하기");
-	/*private JCheckBox pizzaButton = new JCheckBox("피자");
-	private JCheckBox chickenButton = new JCheckBox("치킨");
-	private JCheckBox breadButton = new JCheckBox("빵");
-	private JCheckBox wineButton = new JCheckBox("와인");
-	private JCheckBox spaghettiButton = new JCheckBox("스파게티");
-*/
+	
+	
 	checkItemListener listener = new checkItemListener();	
 	//DB 사용하기위해서,,,
 	DBConnectionMgr pool;
@@ -399,12 +410,20 @@ class StatusReserv extends JDialog{
 	ResultSet rs;
 	
 	private int sum;
+	boolean chk=false;
+	
+
+	public boolean visible() {
+		this.setVisible(!chk); //true
+		chk=!chk; //false
+		return chk;
+	}
 	
 	public StatusReserv(JFrame frame, String title, int num) {
-		super(frame,title);
+		super(frame,num+"호실 상태");
 		setLayout(null);
 		setNum(num);
-		sum=Integer.parseInt(getAmount(num));
+		sum=getAmount(num);
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 400, 300);
         layeredPane.setLayout(null);
@@ -414,17 +433,9 @@ class StatusReserv extends JDialog{
         JPanel panel = new JPanel();
         panel.setBounds(0, 0, 400, 300);
         
-        nameLabel  = new JLabel(getNum()+"호 사용자 "+getUser(getNum())+" 님");
+        nameLabel  = new JLabel("사용자"+getUser(getNum())+" 님");
         nameLabel.setBounds(20,15,200,20);
-        //userLabel.setBounds(70,15,80, 20);
         roomServiceLabel.setBounds(20, 40, 80, 20);
-			/*try {
-				userLabel.setText(getUser(num));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
 		int x=20,w = 60;
 		for(int i=0;i<foodBoxs.length;i++) {
 			foodBoxs[i]= new JCheckBox(names[i]);
@@ -440,21 +451,12 @@ class StatusReserv extends JDialog{
 		savePriceButton.setBounds(150, 100, 65, 20);
 		outRoomButton.setBounds(130, 150, 100, 20);
 		
-		//pizzaButton.setBounds(20, 60, 60, 20);
-		//chickenButton.setBounds(80, 60, 60, 20);
-		//breadButton.setBounds(140, 60, 60, 20);
-		//wineButton.setBounds(190, 60, 60, 20);
-		//spaghettiButton.setBounds(250, 60, 80, 20);
-		
-		//layeredPane.add(pizzaButton); layeredPane.add(chickenButton);
-		//layeredPane.add(breadButton); layeredPane.add(wineButton);
-		//layeredPane.add(spaghettiButton);
-		
 		layeredPane.add(savePriceButton);savePriceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				addAmount(getNum());
+				setAmount(getNum());
+				setPrice(getNum());
 				JOptionPane.showMessageDialog(null, "금액이 추가되었습니다", "룸서비스 사용", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -462,6 +464,7 @@ class StatusReserv extends JDialog{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 				outRoom(getNum());
 			}
 		});
@@ -479,7 +482,6 @@ class StatusReserv extends JDialog{
 	}
 	
 	class checkItemListener implements ItemListener{
-		
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			// TODO Auto-generated method stub
@@ -505,12 +507,13 @@ class StatusReserv extends JDialog{
 					sum-=55000;
 				else sum-=34000;
 			}
+
 			sumPriceJLabel.setText(Integer.toString(sum));
 		}
 		
 	}
 	
-	public void addAmount(int num) {
+	public void setAmount(int num) {
 		pool = DBConnectionMgr.getInstance();
 		con = null;	pstmt = null;
 		sql = null;	rs = null;
@@ -525,6 +528,64 @@ class StatusReserv extends JDialog{
 		}
 	}
 	
+	public int getAmount(int num) {
+		pool = DBConnectionMgr.getInstance();
+		con = null;
+		pstmt = null;
+		
+		sql = null;
+		rs = null;
+		
+		try {
+			con = pool.getConnection();
+			sql = " select * from member where NUM="+num+"";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return Integer.parseInt(rs.getString("TOTAL_AMOUNT"));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0; 
+	}
+	
+	public void setPrice(int num) {
+		pool = DBConnectionMgr.getInstance();
+		con = null;	pstmt = null;
+		sql = null;	rs = null;
+		try {
+			con = pool.getConnection();
+			sql = "UPDATE ROOM SET SERVICE_PRICE = "+sum+" where NUM = "+num+"";
+			pstmt = con.prepareStatement(sql);
+			int cnt = pstmt.executeUpdate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public int getPrice(int num) {
+		pool = DBConnectionMgr.getInstance();
+		con = null;	pstmt = null;
+		sql = null;	rs = null;
+		try {
+			con = pool.getConnection();
+			sql = " select * from ROOM where NUM="+num+" ";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				//System.out.println(rs.getString("name"));
+				return Integer.parseInt(rs.getString("SERVICE_PRICE"));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public void outRoom(int num) {
 		pool = DBConnectionMgr.getInstance();
 		con = null;	pstmt = null;
@@ -536,11 +597,8 @@ class StatusReserv extends JDialog{
 			int cnt = pstmt.executeUpdate();
 			if (cnt > 0) {
 				JOptionPane.showMessageDialog(null, "퇴실 처리 되었습니다", "퇴실 처리", JOptionPane.CLOSED_OPTION);
-				if(num < 2000) {
-					panSeat.setonoff("off", "roomOff1");
-					panSeat.setName("off");
-				}
-				else panSeat.setonoff("off", "VipRoomOff");
+				setChk(num,2);
+				setVisible(false);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -572,28 +630,21 @@ class StatusReserv extends JDialog{
 		return "x"; 
 	}
 	
-	public String getAmount(int num) {
+	//room 퇴실처리
+	public void setChk(int num, int c) {
 		pool = DBConnectionMgr.getInstance();
-		con = null;
-		pstmt = null;
-		
-		sql = null;
-		rs = null;
-		
+		con = null;	pstmt = null;
+		sql = null;	rs = null;
 		try {
 			con = pool.getConnection();
-			sql = " select * from member where NUM="+num+" ";
+			sql = "update room set chk='"+c+"',user_name=NULL,IN_DATE=NULL where NUM = "+num+"";
 			pstmt = con.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				//System.out.println(rs.getString("name"));
-				return rs.getString("TOTAL_AMOUNT");
-			}
+			int cnt = pstmt.executeUpdate();
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "xx"; 
 	}
 	
 	public int getNum() {

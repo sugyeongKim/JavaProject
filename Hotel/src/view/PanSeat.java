@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -15,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+
+import assets.DBConnectionMgr;
  //객실 그림
  //일반호실
 public class PanSeat extends JPanel{
@@ -29,6 +34,14 @@ public class PanSeat extends JPanel{
     private JLabel[] label = new JLabel[4];
     private int numSeat;
     
+    DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	
+	String sql = null;
+	ResultSet rs = null;
+	
     public PanSeat() {}
     public PanSeat(int num) {
         this.numSeat = num;
@@ -38,7 +51,7 @@ public class PanSeat extends JPanel{
         JPanel panImg = new InnerPanel();
         panImg.setBounds(0, 0, 99, 99);
         
-       // seatButton.setForeground((Color.WHITE));
+        seatButton.setForeground((Color.WHITE));
         seatButton.setBorderPainted(false);
         seatButton.setFocusPainted(false);
         seatButton.setContentAreaFilled(false);
@@ -46,36 +59,31 @@ public class PanSeat extends JPanel{
         
         this.add(seatButton);
 
-		insert = new insertReserv(frame, "일반 예약", numSeat);
-
-
-
 		
         seatButton.addActionListener(new ActionListener() {
 			@Override
+			//이 부분을 room ddb를 체크해서 chk가 0이면 미사용, 1이면 사용ㅇ중. 
+			//room db는 초기화를 시켜놓을까?아예ㅖ 처음에 방번호랑 chk만 넣어놓고 다른건 null로 잡아놓으면 되지않을까,,,
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("click: "+seatButton.getText());
-		        seatButton.setText(getName());
+				System.out.println("chk : "+getChk(num));
 				// TODO Auto-generated method stub
-				//JButton button = (JButton)e.getSource();
-				if(seatButton.getText().equals("off")) {
-					if(insert.visible()) {
-						setonoff("on", "roomOn");
-				        seatButton.setText(getName());
-					}
-					else {
-						setonoff("off", "roomOff1");
-				        seatButton.setText(getName());
-					}
-					//insert.setNum(PanSeat.this.numSeat);
-						
-					//System.out.println(PanSeat.this.numSeat);
+				if(getChk(num) == 0) {
+					insert = new insertReserv(frame, "일반 예약", numSeat);
+					insert.visible();
+					setonoff("on", "roomOn");
+				    seatButton.setText(getName());
 				}
-				else {		
+				else if (getChk(num) == 2) {
+					status.setChk(num,0);
+					setonoff("off", "roomOff1");
+				}
+				else {
+					seatButton.setForeground(new Color(128,128,128));
 					status = new StatusReserv(frame, "일반 객실 상태", numSeat);
-					//seatButton.setForeground(new Color(128,128,128));
-					status.setNum(numSeat);
-					status.setVisible(true);
+					status.visible();
+				    seatButton.setText(getName());
+		
 				}
 			}
 		});
@@ -98,7 +106,6 @@ public class PanSeat extends JPanel{
             panContent.add(label[i]);
         }
         panContent.setOpaque(false);
-         
          
         //제이레이어패널
         JLayeredPane panLayered = new JLayeredPane();
@@ -131,6 +138,7 @@ public class PanSeat extends JPanel{
             g.drawImage(img, 0, 0, null);
         }
     }
+    
     public BufferedImage img(String filename) {
         // 이미지 받아오기 - gameOn, gameOff (로그인, 로그오프)
         try {
@@ -142,21 +150,32 @@ public class PanSeat extends JPanel{
         repaint();
 		return img;
     }
-    public void setName(String name) {
-    	bname = name;
-    	System.out.println("setName:"+bname);
-    }
+    //이름가져오기?
     
-    public String getName() {
-    	System.out.println("getName:"+bname);
-    	return bname;
-    }
+    public int getChk(int num) {
+    	pool = DBConnectionMgr.getInstance();
+    	con = null;	pstmt = null;
+    	sql = null;	rs = null;
+    	
+	try {
+		con = pool.getConnection();
+		sql = " select * from room where NUM="+num+" ";
+		pstmt = con.prepareStatement(sql);
+		rs = pstmt.executeQuery();
+		if(rs.next()) {
+			return Integer.parseInt(rs.getString("chk"));
+		}
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return 0;
+}
+    
     public void setonoff(String status, String fname) {
     	System.out.println(status+","+fname);
         bname=status;
         System.out.println(status+","+fname+"@@");
     	img(fname);
-    }
-    
-    
+    }    
 }

@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -15,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+
+import assets.DBConnectionMgr;
  //객실 그림
  //일반호실
 public class VipSeat extends JPanel{
@@ -24,10 +29,19 @@ public class VipSeat extends JPanel{
 	private insertReserv insert;
 	private StatusReserv status;
 	private BufferedImage img = null;
-	private JButton seatButton = new JButton("off");
+	private static String bname="off";
+	public  JButton seatButton = new JButton(bname);
     private JLabel[] label = new JLabel[4];
     private int numSeat;
-    
+
+    DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	
+	String sql = null;
+	ResultSet rs = null;
+	
     public VipSeat() {}
     public VipSeat(int num) {
         this.numSeat = num;
@@ -50,36 +64,27 @@ public class VipSeat extends JPanel{
         seatButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("click: "+seatButton.getText());
 				// TODO Auto-generated method stub
-				JButton button = (JButton)e.getSource();
-				if(button.getText().equals("off")) {
-					insert.setVisible(true);
-					if(insert.check()) {
-			        	button.setText("on");
-			        	img("VipRoomOn");
-					}		
-					//System.out.println(PanSeat.this.numSeat);
-					seatButton.setForeground(new Color(128,128,128));
+				if(getChk(num) == 0) {
+				insert = new insertReserv(frame, "vip 예약", numSeat);
+				insert.visible();
+				setonoff("on", "VipRoomOn");
+			    seatButton.setText(getName());
+			}
+			else if (getChk(num) == 2) {
+				status.setChk(num,0);
+				setonoff("off", "VipRoomOff");
+			}
+			else {
+				seatButton.setForeground(new Color(128,128,128));
+				status = new StatusReserv(frame, "vip 객실 상태", numSeat);
+				status.visible();
+			    seatButton.setText(getName());
 				}
-				else {
-					//status=new StatusReserv(frame, "Vip 객실 상태",numSeat);
-					//status.setNum(numSeat);
-					status.setVisible(true);
-				}
-				if(insert.check()) {
-		        	button.setText("on");
-		        	img("VipRoomOn");
-				}		
 			}
 		});
-        /*seatButton[numSeat].addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				img("roomOn");
-			}
-		});
-        */
+        
         //상태정보 패널
         JPanel panContent = new JPanel();
         panContent.setLayout(null);
@@ -88,7 +93,6 @@ public class VipSeat extends JPanel{
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
                 label[i] = new JLabel(numSeat + "호");
-               /// if (numSeat+1==10)
             }
             else
                 label[i] = new JLabel("");
@@ -145,7 +149,32 @@ public class VipSeat extends JPanel{
         repaint();
 		return img;
     }
-
     
+    public int getChk(int num) {
+    	pool = DBConnectionMgr.getInstance();
+    	con = null;	pstmt = null;
+    	sql = null;	rs = null;
+    	
+	try {
+		con = pool.getConnection();
+		sql = " select * from room where NUM="+num+" ";
+		pstmt = con.prepareStatement(sql);
+		rs = pstmt.executeQuery();
+		if(rs.next()) {
+			return Integer.parseInt(rs.getString("chk"));
+		}
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return 0;
+}
+    
+    public void setonoff(String status, String fname) {
+    	System.out.println(status+","+fname);
+        bname=status;
+        System.out.println(status+","+fname+"@@");
+    	img(fname);
+    }
     
 }

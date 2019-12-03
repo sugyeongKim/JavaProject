@@ -23,7 +23,7 @@ public class StaffDAO extends JPanel{
 
         //private String driver = "oracle.jdbc.driver.OracleDriver";        
               // @호스트 IP : 포트 : SID
-        private String colNames[] = {"사원번호","이름","성별","나이","연락처","주소","역할","부서"};  // 테이블 컬럼 값들
+        private String colNames[] = {"사원번호","이름","성별","나이","연락처","주소","역할"};  // 테이블 컬럼 값들
         private DefaultTableModel model = new DefaultTableModel(colNames, 0); //  테이블 데이터 모델 객체 생성
                 
         DBConnectionMgr pool = DBConnectionMgr.getInstance();
@@ -81,7 +81,7 @@ public class StaffDAO extends JPanel{
                     model.addRow(new Object[]{rs.getString("NUMBER"),rs.getString("NAME"),
                                                             rs.getString("GENDER"),rs.getString("AGE"),
                                                             rs.getString("TEL"),rs.getString("ADDR"),
-                                                            rs.getString("POSITION"),rs.getString("department")});
+                                                            rs.getString("POSITION")});
                 }
             }catch(Exception e){
                 System.out.println(e.getMessage());
@@ -115,7 +115,7 @@ public class StaffDAO extends JPanel{
                 public void actionPerformed(ActionEvent e) {
                     System.out.println(e.getActionCommand());        // 선택된 버튼의 텍스트값 출력
                     DefaultTableModel model2 = (DefaultTableModel)table.getModel();
-                    model2.addRow(new String[]{"","","","","","","",""});  // 새테이블의 초기값
+                    model2.addRow(new String[]{"","","","","","",""});  // 새테이블의 초기값
                 }
             });
             jBtnAddRow.setBounds(150,222,110,30);
@@ -130,8 +130,8 @@ public class StaffDAO extends JPanel{
                     DefaultTableModel model2 = (DefaultTableModel)table.getModel();
                     int row = table.getSelectedRow();
                     if(row<0) return;     // 선택이 안된 상태면 -1리턴
-                    String query = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION, DEPARTMENT)" 
-                          + "values (?,?,?,?,?,?,?,?)"; 
+                    String query = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION)" 
+                          + "values (?,?,?,?,?,?,?)"; 
 
                     try{
                         //Class.forName(driver);  // 드라이버 로딩
@@ -147,7 +147,7 @@ public class StaffDAO extends JPanel{
                         pstmt.setString(5, String.valueOf (model2.getValueAt(row, 4)));
                         pstmt.setString(6, String.valueOf (model2.getValueAt(row, 5)));
                         pstmt.setString(7, String.valueOf (model2.getValueAt(row, 6)));
-                        pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
+                        //pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
                         	//뭐야 마지막 왜 안들어가
                         int cnt = pstmt.executeUpdate();
                         //pstmt.executeUpdate(); create insert update delete 
@@ -174,20 +174,18 @@ public class StaffDAO extends JPanel{
             jBtnEditRow.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {        
                             
-                    System.out.println(e.getActionCommand());   // 선택된 버튼의 텍스트값 출력
+                    System.out.println(e.getActionCommand());// 선택된 버튼의 텍스트값 출력
                     DefaultTableModel model2 = (DefaultTableModel)table.getModel();
                     int row = table.getSelectedRow();
                     if(row<0) return;     // 선택이 안된 상태면 -1리턴
  
                     String query = "UPDATE STAFF SET NUMBER=?, NAME=?, GENDER=?, AGE=?, "
-                    		+ "TEL=?, ADDR=?, POSITION=?, DEPARTMENT=? where NUMBER=?";
+                    		+ "TEL=?, ADDR=?, POSITION=? where NUMBER=?";
                     
                     try{
-                        //Class.forName(driver);  // 드라이버 로딩
                         con = pool.getConnection();
                         pstmt = con.prepareStatement(query);
                         
-                        // 물음표가 4개 이므로 4개 각각 입력해줘야한다.
                         pstmt.setInt(1, Integer.valueOf((String) model2.getValueAt(row, 0)));
                         pstmt.setString(2, String.valueOf(model2.getValueAt(row, 1)));
                         pstmt.setString(3, String.valueOf (model2.getValueAt(row, 2)));
@@ -195,7 +193,7 @@ public class StaffDAO extends JPanel{
                         pstmt.setString(5, String.valueOf (model2.getValueAt(row, 4)));
                         pstmt.setString(6, String.valueOf (model2.getValueAt(row, 5)));
                         pstmt.setString(7, String.valueOf (model2.getValueAt(row, 6)));
-                        pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
+                        //pstmt.setString(8, String.valueOf (model2.getValueAt(row, 7)));
 
                         int cnt = pstmt.executeUpdate();
                         //pstmt.executeUpdate(); create insert update delete 
@@ -273,8 +271,8 @@ public class StaffDAO extends JPanel{
 		
 		if(!rs.next()) {
 		con = pool.getConnection();
-		sql = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION, department)"
-				+ " values ('"+number+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+position+"','"+department+"');";
+		sql = "insert into STAFF (NUMBER, NAME, GENDER, AGE, TEL, ADDR, POSITION)"
+				+ " values ('"+number+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+position+"');";
 		pstmt = con.prepareStatement(sql);
 		return pstmt.executeUpdate();
 		}
