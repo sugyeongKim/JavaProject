@@ -62,8 +62,8 @@ public class PanSeat extends JPanel{
 		
         seatButton.addActionListener(new ActionListener() {
 			@Override
-			//이 부분을 room db를 체크해서 chk가 0이면 미사용, 1이면 사용중. 2는 탈퇴직후
-			//room db는 초기화를 시켜놓고 프레임창을 닫을때 delete하도록 설계하자
+			//이 부분을 room ddb를 체크해서 chk가 0이면 미사용, 1이면 사용ㅇ중. 
+			//room db는 초기화를 시켜놓을까?아예ㅖ 처음에 방번호랑 chk만 넣어놓고 다른건 null로 잡아놓으면 되지않을까,,,
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("click: "+seatButton.getText());
 				System.out.println("chk : "+getChk(num));
@@ -73,14 +73,17 @@ public class PanSeat extends JPanel{
 					insert.visible();
 					setonoff("on", "roomOn");
 				    seatButton.setText(getName());
-				}else if (getChk(num) == 2) {
+				}
+				else if (getChk(num) == 2) {
 					status.setChk(num,0);
 					setonoff("off", "roomOff1");
-				}else {
+				}
+				else {
 					seatButton.setForeground(new Color(128,128,128));
 					status = new StatusReserv(frame, "일반 객실 상태", numSeat);
 					status.visible();
 				    seatButton.setText(getName());
+		
 				}
 			}
 		});

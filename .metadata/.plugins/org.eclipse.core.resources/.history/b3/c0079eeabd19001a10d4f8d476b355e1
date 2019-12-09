@@ -147,9 +147,12 @@ public class FrameManage extends JFrame implements ActionListener{
         }
     
     public int insertRoom(int num) throws Exception {
+		//여기에서 room db에 들어갈 것 만ㄷ르구,,
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		
 		String sql = null;
 		ResultSet rs = null;
 		
@@ -159,11 +162,12 @@ public class FrameManage extends JFrame implements ActionListener{
 		rs = pstmt.executeQuery();
 		
 		if(!rs.next()) {
-			con = pool.getConnection();
-			sql = "insert into room (NUM, CHK, USER_NAME, IN_DATE, SERVICE_PRICE) values ('"+num+"',0, NULL, NULL, 0)";
-			pstmt = con.prepareStatement(sql);
-			return pstmt.executeUpdate();
-		}else {
+		con = pool.getConnection();
+		sql = "insert into room (NUM, CHK, USER_NAME, IN_DATE, SERVICE_PRICE) values ('"+num+"',0, NULL, NULL, 0)";
+		pstmt = con.prepareStatement(sql);
+		return pstmt.executeUpdate();
+		}
+		else {
 			System.out.println("초기화 실패!");
 			return 0;
 		}
@@ -263,6 +267,7 @@ public class FrameManage extends JFrame implements ActionListener{
 	
 	public void showSales() {
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		

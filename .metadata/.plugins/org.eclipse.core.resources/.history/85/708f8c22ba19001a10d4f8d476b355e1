@@ -230,6 +230,7 @@ public class StaffDAO extends JPanel{
                         con = pool.getConnection();
                         pstmt = con.prepareStatement(query);
                         
+                        // 물음표가 1개 이므로 4개 각각 입력해줘야한다.
                         pstmt.setString(1, (String) model2.getValueAt(row, 0));
                         int cnt = pstmt.executeUpdate();
                         //pstmt.executeUpdate(); create insert update delete 

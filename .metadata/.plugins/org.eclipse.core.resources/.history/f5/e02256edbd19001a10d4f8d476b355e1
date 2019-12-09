@@ -263,10 +263,10 @@ class insertReserv extends JDialog{
     	tel.setText("");
     }
     
-	public int insertData(String type, int num, String name, String gender, int age, 
-			String tel, String addr, int amount) throws Exception {
+	public int insertData(String type, int num, String name, String gender, int age, String tel, String addr, int amount) throws Exception {
 
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
+
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -280,21 +280,20 @@ class insertReserv extends JDialog{
 		
 		if(!rs.next()) {
 		con = pool.getConnection();
-		sql = "insert into member (ROOM_TYPE, INSERTDATE, NUM, NAME, GENDER, AGE, TEL, ADDR, TOTAL_AMOUNT) "
-				+ "values ('"+type+"',CURRENT_TIMESTAMP,'"+num+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', "
-						+ "'"+addr+"','"+amount+"');";
+		sql = "insert into member (ROOM_TYPE, INSERTDATE, NUM, NAME, GENDER, AGE, TEL, ADDR, TOTAL_AMOUNT) values ('"+type+"',CURRENT_TIMESTAMP,'"+num+"', '"+name+"', '"+gender+"', '"+age+"', '"+tel+"', '"+addr+"','"+amount+"');";
 		pstmt = con.prepareStatement(sql);
-
+		//insertRoom(num, 1, name, amount);
 		return pstmt.executeUpdate();
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "ee이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
 			System.out.println("이미 입실이 되어있는 방입니다!");
 			return 0;
 		}
 	}
 	
 	public void addRoom(int num, String name, int amount) throws Exception {
+		//여기에서 room db에 들어갈 것 만ㄷ르구,,
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
 
 		Connection con = null;
@@ -308,10 +307,17 @@ class insertReserv extends JDialog{
 		pstmt = con.prepareStatement(sql);
 		rs = pstmt.executeQuery();
 		
+		//if(!rs.next()) {
 		con = pool.getConnection();
 		sql = "update room set chk=1, user_name='"+name+"',IN_DATE = CURRENT_TIMESTAMP, SERVICE_PRICE='"+amount+"' where num = "+num;
 		pstmt = con.prepareStatement(sql);
 		pstmt.executeUpdate();
+		//}
+		//else {
+			//JOptionPane.showMessageDialog(null, "22이미 입실이 되어있는 방입니다!", "입실 불가", JOptionPane.INFORMATION_MESSAGE);
+			//System.out.println("이미 입실이 되어있는 방입니다!");
+		
+		//}
 	}
 	
 	public int getNum() {
@@ -333,26 +339,41 @@ class insertReserv extends JDialog{
 			if(e.getStateChange() == ItemEvent.DESELECTED)
 				return; 
 		if(typeString.equals("General")) {
-			if(onedayBox.isSelected()) 
+			if(onedayBox.isSelected()) {
 				money = "10000";
-			else if (twodayBox.isSelected()) 
+				 
+			}
+			else if (twodayBox.isSelected()) {
 				money = "15000";
-			else if (threedayBox.isSelected()) 
+ 
+			}
+			else if (threedayBox.isSelected()) {
 				money = "20000";
-			else 
+ 
+			}
+			else {
 				money = "25000";
-		amountLabel.setText(money);
-		}
-		
+ 
+			}
+			amountLabel.setText(money);
+			}
 		else {
-			if(onedayBox.isSelected()) 
+			if(onedayBox.isSelected()) {
 				money = "40000";
-			else if (twodayBox.isSelected()) 
+ 
+			}
+			else if (twodayBox.isSelected()) {
 				money = "50000";
-			else if (threedayBox.isSelected()) 
+		 
+			}
+			else if (threedayBox.isSelected()) {
 				money = "60000";
-			else 
+			 
+			}
+			else {
 				money = "70000";
+			 
+			}
 			amountLabel.setText(money);
 			}
 		}
@@ -511,6 +532,7 @@ class StatusReserv extends JDialog{
 		pool = DBConnectionMgr.getInstance();
 		con = null;
 		pstmt = null;
+		
 		sql = null;
 		rs = null;
 		
